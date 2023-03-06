@@ -2,7 +2,7 @@
 
 - name: "configuration play." 
   hosts: web
-  user: ubuntu
+  remote_user: ubuntu
   become: true
   become_method: sudo
   become_user: root  
@@ -22,7 +22,7 @@
       raw:  test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
       changed_when: false 
 
-- setup:
+    - setup:
 
   roles:
     - configure-server
