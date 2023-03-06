@@ -1,13 +1,11 @@
 version: 2.1
-# orbs:
-#   slack: circleci/slack@4.9.3
 
 commands:
     install_awscli:
-      description: install AWS CLI v2
+      description: install AWS CLI 
       steps:
         - run:
-            name: Install AWS CLI v2
+            name: Install AWS CLI 
             command: |
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
               unzip awscliv2.zip
@@ -169,7 +167,7 @@ jobs:
       - checkout
       - install_awscli
       - run:
-          name: Ensure back-end infrastructure exists
+          name: Ensure back-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
