@@ -12,6 +12,7 @@ commands:
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
               unzip awscliv2.zip
               sudo ./aws/install
+
     install_ansible:
       description: install Ansible v2    
       steps:
@@ -74,7 +75,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-deps
-      # - notify_on_failure 
+      
 
   build-backend:
     docker:
@@ -92,7 +93,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
-      # - notify_on_failure
+      
 
   test-frontend:
     docker:
@@ -107,7 +108,7 @@ jobs:
              cd frontend
              npm install 
              npm test
-      # - notify_on_failure
+      
 
                 
   test-backend:
@@ -123,7 +124,7 @@ jobs:
              cd backend
              npm install 
              npm test 
-      # - notify_on_failure
+      
             
   scan-frontend:
     docker:
@@ -140,7 +141,7 @@ jobs:
              npm audit fix --force --audit-level=critical
              npm audit fix --force --audit-level=critical
              npm audit --audit-level=critical
-      # - notify_on_failure
+      
 
   scan-backend:
     docker:
@@ -157,7 +158,7 @@ jobs:
              npm audit fix --force --audit-level=critical
              npm audit fix --force --audit-level=critical
              npm audit --audit-level=critical 
-      # - notify_on_failure
+      
   
 
 
@@ -200,8 +201,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-
-      - destroy-environment     
+      
+      - destroy-environment   
 
 #   configure-infrastructure:
 #     docker:
