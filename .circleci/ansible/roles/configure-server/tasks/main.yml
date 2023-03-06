@@ -1,11 +1,11 @@
 ---
 - name: "Add Node.js from Nodesource"
-  become: true
+  become: true 
   shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_14.x — Node.js 14 LTS | sudo -E bash -
 
 - name: "install Node.js 13"
-  become: true
+  become: true 
   apt:
     name: ["nodejs"]
     state: latest
@@ -15,4 +15,3 @@
   npm:
     name: pm2
     global: yes
-    
