@@ -151,7 +151,6 @@ jobs:
              npm audit fix --force --audit-level=critical
              npm audit --audit-level=critical 
       
-  
   deploy-infrastructure:
     docker:
       - image:  cimg/base:stable
@@ -175,8 +174,7 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-
-              
+    
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -225,12 +223,10 @@ jobs:
             cd backend
             npm install
             npm fund
-            npm fund
             npm audit fix --force --audit-level=critical
             npm audit fix --force --audit-level=critical
-            npm audit fix --force --audit-level=critical
-            npm fund
             npm run migrations > migrations_dump.txt
+
       - run:
           name: Send migration result to kvdb.io
           command: |
@@ -336,14 +332,6 @@ jobs:
 #               # your code here
 #             fi
             
-  # notify_on_success:
-  #   docker:
-  #     - image: cimg/base
-  #   steps:
-  #     - slack/notify:
-  #         event: pass
-  #         channel: cicd-pipeline
-  #         template: success_tagged_deployment_1
 
 workflows:
   default:
