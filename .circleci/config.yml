@@ -197,13 +197,17 @@ jobs:
       - image: cimg/base:stable
     steps: 
       - checkout 
-      - install_ansible
       - add_ssh_keys:
           fingerprints: ["0b:6e:43:09:61:c7:bc:6b:cd:84:7d:08:56:bd:07:e3"]
+      - run:
+          name: Install Ansible
+          command: | 
+            #Install Ansible 
+            apk add --update ansible
       - attach_workspace:
           at: ~/
       - run:
-          name: configure server 
+          name: run playbook & configure server 
           command: | 
             cd .circleci/ansible
             cat inventory.txt
