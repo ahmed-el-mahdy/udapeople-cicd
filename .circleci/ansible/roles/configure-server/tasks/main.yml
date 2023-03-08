@@ -2,7 +2,7 @@
 - name: "Add Node.js from Nodesource"
   become: true 
   shell: |
-    curl -sL https://deb.nodesource.com/setup_14  | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_18.x  | sudo -E bash -
 
 - name: "install Node.js 14"
   become: true 
