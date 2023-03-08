@@ -222,9 +222,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            sudo npm cache clean -f 
-            sudo npm install -g n 
-            sudo n stable
+            npm install
             npm run migrations > migrations_dump.txt
 
       - run:
