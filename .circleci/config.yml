@@ -231,6 +231,7 @@ jobs:
             npm audit --audit
             npm audit fix --force --audit-level=high
             npm audit fix --force --audit-level=high
+            npm audit --audit
             npm run migrations > migrations_dump.txt
 
       - run:
