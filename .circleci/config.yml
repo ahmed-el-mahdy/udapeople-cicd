@@ -223,7 +223,7 @@ jobs:
           command: |
             cd backend
             sudo npm cache clean -f 
-            sudo npm install GLIBC_2.28
+            sudo npm install glibc_2.28
             sudo npm install -g n 
             sudo npm install -g n
             sudo n stable
