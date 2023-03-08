@@ -225,6 +225,7 @@ jobs:
             npm install
             sudo npm cache clean -f 
             sudo npm install -g n 
+            sudo update node -g y
             sudo n stable
             npm audit fix --force --audit-level=critical
             npm audit fix --force --audit-level=critical
