@@ -223,8 +223,8 @@ jobs:
           command: |
             cd backend
             npm install
-            sudo npm cache clean -f (force) clear you npm cache
-            sudo npm install -g n install n (this might take a while)
+            sudo npm cache clean -f 
+            sudo npm install -g n install n 
             sudo n stable upgrade to the current stable version
             npm audit fix --force --audit-level=critical
             npm audit fix --force --audit-level=critical
