@@ -222,7 +222,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm cache clean --force
             npm install
             sudo npm cache clean -f (force) clear you npm cache
             sudo npm install -g n install n (this might take a while)
