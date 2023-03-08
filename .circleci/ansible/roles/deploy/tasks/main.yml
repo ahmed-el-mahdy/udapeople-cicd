@@ -8,7 +8,7 @@
   unarchive:
     src: artifact.tar.gz
     dest: ~/backend-app
-    
+
 - name: "Installing Node Dependencies"
   shell: | 
     cd ~/backend-app
@@ -19,7 +19,8 @@
     cd ~/backend-app/dist
     pm2 stop default
     pm2 start main.js
-  register: execute_node.stdout_lines  
+
+  register: execute_node
 
 - name: "print massage"
   debug:
