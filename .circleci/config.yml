@@ -222,8 +222,8 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm install
             sudo npm cache clean -f 
+            sudo npm install GLIBC_2.28
             sudo npm install -g n 
             sudo npm install -g n
             sudo n stable
