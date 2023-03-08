@@ -223,8 +223,6 @@ jobs:
           command: |
             cd backend
             npm cache clean --force
-            delete node_modules folder
-            delete package-lock.json
             npm install
             npm audit fix --force --audit-level=critical
             npm audit fix --force --audit-level=critical
