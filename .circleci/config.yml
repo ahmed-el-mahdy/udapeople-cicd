@@ -286,41 +286,52 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - checkout 
-      - install_awscli
-      - install_ansible
-      - install_nodejs
+      - checkout
       - add_ssh_keys:
-          fingerprints: ["0b:6e:43:09:61:c7:bc:6b:cd:84:7d:08:56:bd:07:e3"]
+          fingerprints: 
+            - "06:5d:3f:8e:24:61:3f:82:ae:78:21:81:77:cc:66:bb" 
       - attach_workspace:
           at: ~/
       - restore_cache:
-          keys: [backend-deps]
+          keys: [backend-build]          
       - run:
           name: Install dependencies
           command: |
+            # install AWS CLI
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            # install node js
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs
+            sudo npm install --global n
+            sudo n 13.8.0
+            # install Ansible
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y            
+      - run:
+          name: packging backend
+          command: |
             cd backend
             npm install
-      - run: 
-          name: package Backend
-          command: |
-            cd backend
             npm run build
             tar -czf artifact.tar.gz dist/* package*
-            cd /backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
-
+            cd ..
+            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy backend
-          command: |
-            export TYPEORM_MIGRATIONS_DIR=./mifrations
+          command: | 
+            export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-
             cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      
-      - destroy-environment
+             
+      - destroy-environment      
       - revert-migrations
  
 
