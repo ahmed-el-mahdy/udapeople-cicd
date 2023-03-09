@@ -29,7 +29,8 @@ commands:
           name: Install Node.js 13.8.0
           command: |
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y node.js
+            sudo apt-get install gcc g++ make
+            sudo apt-get update && sudo apt-get install yarn
             sudo apt-get install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0 
