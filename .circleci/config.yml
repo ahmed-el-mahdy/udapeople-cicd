@@ -270,7 +270,6 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-
               echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
               cat frontend/.env
       - run:
@@ -308,7 +307,6 @@ jobs:
             cd backend
             npm run build
             tar -czf artifact.tar.gz dist/* package*
-
             cd ..
             cd backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
 
