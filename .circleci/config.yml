@@ -131,7 +131,7 @@ jobs:
           command: |
              cd backend
              npm install 
-             npm testt
+             npm test
       
   scan-frontend:
     docker:
@@ -164,7 +164,7 @@ jobs:
       - run:
           name: Back-end Unit Scan
           command: |
-             cd backend
+             cd backendd
              npm install 
              npm audit fix --force --audit-level=critical
              npm audit fix --force --audit-level=critical
