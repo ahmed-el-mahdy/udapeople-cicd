@@ -166,7 +166,14 @@ jobs:
           command: |
              cd backend
              npm install 
-             
+             npm audit fix --force --audit-level=critical
+             npm audit fix --force --audit-level=critical
+             npm audit fix --force
+             npm audit fix --force
+             npm audit --audit-level=critical
+             npm audit --audit-level=critical
+             npm audit fix
+             npm audit fix
       
   deploy-infrastructure:
     docker:
@@ -340,42 +347,40 @@ jobs:
       - revert-migrations
  
 
-  # smoke-test:
-  #   docker:
-  #     - image: cimg/base:stable 
-  #   steps:
-  #     - checkout 
-  #     - install_awscli
-  #     - install_nodejs
+  smoke-test:
+    docker:
+      - image: cimg/base:stable 
+    steps:
+      - checkout 
+      - install_awscli
+      - install_nodejs
 
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           # your code here
-  #     - run:
-  #         name: Get backend url
-  #         command: |
-  #           # your code here
-  #     - run:
-  #         name: Backend smoke test.
-  #         command: |
-  #           BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-  #             --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
-  #             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #             --output text)
+      - run:
+          name: Backend smoke test.
+          command: |
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
             
-  #           export API_URL=http;//${BACKEND_PUBLIC_IP}:3030
-  #           if curl -s $API_URL/api/status |grep "ok"
-  #           then
-  #             exit 0
-  #           else 
-  #             exit 1 
-            
-  #     - run:
-  #         name: Frontend smoke test.
-  #         command: |
-  #           # your code here
-      # Here's where you will add some code to rollback on failure  
+            export API_URL=http;//${BACKEND_PUBLIC_IP}:3030
+            if curl -s $API_URL/api/status |grep "ok"
+            then
+              exit 0
+            else 
+              exit 1 
+            fi 
+
+    
+      - run:
+          name: Frontend smoke test.
+          command: |
+            FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
+            if curl -s $FRONTEND_WEBSITE | grep "welcome"
+            then  exit 1
+            else
+              exit 11
+            fi
 
 #   cloudfront-update:
 #     docker:
