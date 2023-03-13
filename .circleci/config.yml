@@ -90,7 +90,7 @@ jobs:
       
   build-backend:
     docker:
-      - image: cimqqg/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -100,7 +100,7 @@ jobs:
           command: |
              cd backend
              npm install 
-             npm build 
+             npm buildd
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
