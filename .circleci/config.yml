@@ -354,33 +354,49 @@ jobs:
       - checkout 
       - install_awscli
       - install_nodejs
-
+      - run:
+          name: Install dependencies
+          command: |
+            # install AWS CLI
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            # install node js
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs
+            sudo npm install --global n
+            sudo n 13.8.0
+            
       - run:
           name: Backend smoke test.
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
+              echo "API_URL = ${API_URL}"
+
+            export API_URL="http://${BACKEND_IP}:3030"
             
-            export API_URL=http;//${BACKEND_PUBLIC_IP}:3030
-            if curl -s $API_URL/api/status |grep "ok"
+            if curl -s "${API_URL}/api/status"  | grep "ok"
             then
+              echo " It's Working "
               exit 0
             else 
               exit 1 
             fi 
 
-  
       - run:
           name: Frontend smoke test.
           command: |
             FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
-            if curl -s $FRONTEND_WEBSITE | grep "welcome"
+            if curl -s $FRONTEND_WEBSITE | grep "Welcome"
             then  exit 0
             else
               exit 1
             fi
+
+      - destroy-environment      
+      - revert-migrations
 
 #   cloudfront-update:
 #     docker:
