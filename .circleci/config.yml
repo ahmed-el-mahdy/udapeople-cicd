@@ -362,7 +362,7 @@ jobs:
             tar xz awscliv2.zip
             sudo ./aws/install
             # install node js
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_13.8.0 | sudo -E bash -
             sudo apt install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0
