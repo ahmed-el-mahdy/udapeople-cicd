@@ -351,9 +351,7 @@ jobs:
     docker:
       - image: cimg/base:stable 
     steps:
-      - checkout 
-      - install_awscli
-      - install_nodejs
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -361,8 +359,9 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
+
             # install node js
-            curl -fsSL https://deb.nodesource.com/setup_13.8.0 | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0
