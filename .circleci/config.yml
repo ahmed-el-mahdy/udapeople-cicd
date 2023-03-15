@@ -34,7 +34,6 @@ commands:
             sudo apt-get install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0 
-            
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
