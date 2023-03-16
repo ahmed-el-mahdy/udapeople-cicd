@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.9.3
+
 commands:
   install_awscli:
     description: install AWS CLI v2
@@ -99,7 +102,7 @@ jobs:
           command: |
              cd backend
              npm install 
-             npm build
+             npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
@@ -207,12 +210,10 @@ jobs:
               --output text)
             echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
-
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      
       - destroy-environment  
 
   configure-infrastructure:
@@ -221,7 +222,7 @@ jobs:
     steps:
       - checkout 
       - install_ansible
-      
+      - install_awscli
       - add_ssh_keys:
           fingerprints: ["0b:6e:43:09:61:c7:bc:6b:cd:84:7d:08:56:bd:07:e3"]
       - attach_workspace:
@@ -232,7 +233,6 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-
       - destroy-environment
     
   run-migrations:
@@ -253,7 +253,9 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
-            fi 
+            else
+              echo "No migrations Failed -_- "
+            fi
       - destroy-environment
       - revert-migrations 
 
@@ -286,10 +288,10 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
+            npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-uihggcxd --recursive
-      
       - destroy-environment
       - revert-migrations
                     
@@ -341,7 +343,6 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-             
       - destroy-environment      
       - revert-migrations
  
@@ -391,7 +392,6 @@ jobs:
             else
               exit 0
             fi
-
       - destroy-environment      
       - revert-migrations
 
@@ -420,7 +420,6 @@ jobs:
           root: ~/
           paths:
             - OldWorkflowID.txt
-            
       - run:
           name: Update cloudfront distribution
           command: |
@@ -429,7 +428,6 @@ jobs:
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
-
       - destroy-environment      
       - revert-migrations 
 
