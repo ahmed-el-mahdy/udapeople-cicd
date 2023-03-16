@@ -420,6 +420,7 @@ jobs:
           root: ~/
           paths:
             - OldWorkflowID.txt
+            
       - run:
           name: Update cloudfront distribution
           command: |
