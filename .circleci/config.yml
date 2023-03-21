@@ -259,25 +259,28 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout 
-      - install_awscli
-      - install_nodejs
       - restore_cache:
           keys: [frontend-deps]
       - run:
           name: Install dependencies
           command: |
-              cd frontend 
-              npm install
+              command: |
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                unzip awscliv2.zip
+                sudo ./aws/install
+
+                curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                sudo apt install -y nodejs
+                sudo npm install --global n
+                sudo n 13.8.0
       - run:
           name: Get backend URL
           command: |
-            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-
-              echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
-              cat frontend/.env
+            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[].Instances[].PublicIpAddress' --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -304,20 +307,22 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # install AWS CLI
+            # install_AWS_CLI
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-            # install node js
+
+            # install_node js
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0
-            # install Ansible
+
+            # install_Ansible
             sudo apt update
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y            
+            sudo apt install ansible -y         
       - run:
           name: packging backend
           command: |
