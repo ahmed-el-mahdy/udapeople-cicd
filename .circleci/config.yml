@@ -261,7 +261,6 @@ jobs:
       - destroy-environment
       - revert-migrations 
 
-
   deploy-frontend:
     docker:
       - image: cimg/base:stable
@@ -348,7 +347,6 @@ jobs:
       - destroy-environment      
       - revert-migrations
  
-
   smoke-test:
     docker:
       - image: cimg/base:stable 
@@ -432,7 +430,6 @@ jobs:
               --tags project=udapeople
       - destroy-environment      
       - revert-migrations 
-
   cleanup:
     docker:
       - image: cimg/base:stable
