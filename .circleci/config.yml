@@ -1,6 +1,5 @@
 version: 2.1
 
-
 commands:
   install_awscli:
     description: install AWS CLI v2
@@ -273,7 +272,7 @@ jobs:
               cd frontend 
               npm install
       - run:
-          name: Get backend url
+          name: Get backend URL
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WorkFlow_ID:0:7}" \
