@@ -4,10 +4,8 @@ Parameters:
   ID:
     Description: A unique identifier used to differentiate this deployment from others.
     Type: String
-    Default: my-unique-id
-    AllowedValues:
-      - my-unique-id
-      - another-unique-id
+    Default: "$={12312+1}"
+
 
 Resources:
   InstanceSecurityGroup:
