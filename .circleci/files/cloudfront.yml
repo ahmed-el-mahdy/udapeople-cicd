@@ -2,12 +2,10 @@ Description: >
   Cloudfront distribution for UdaPeople.
 
 Parameters:
-  WorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
-
-
+  WorkflowID: 
+    Value: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 Resources:
-  
   CloudFrontOriginAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
