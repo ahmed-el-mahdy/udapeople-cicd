@@ -1,9 +1,6 @@
 Description: >
   UdaPeople backend stack.
 Parameters:
-  Workflow_ID:
-        type: String
-        default: Workflow_ID=$((1 + RANDOM % 10))
   ID:
     Description: Unique identifier.
     Type: String
@@ -13,7 +10,7 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub UdaPeople-${Workflow_ID}
+      GroupName: !Sub "udapeople-${ID}"
       GroupDescription: Allow port 22 and port 3030 and port 9100
       SecurityGroupIngress:
         - IpProtocol: tcp
