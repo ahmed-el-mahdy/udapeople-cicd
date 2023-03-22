@@ -1,19 +1,19 @@
 Description: >
   UdaPeople backend stack.
-
 Parameters:
+  Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
   ID:
     Description: Unique identifier.
     Type: String
-  WorkflowID:
-    Description: Unique identifier.
-    Type: String
+
 
 Resources:
-  InstanceSecurityGroup: 
+  InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: -!Sub "UdaPeople-${WorkflowID}"
+      GroupName: !Sub UdaPeople-${Workflow_ID}
       GroupDescription: Allow port 22 and port 3030 and port 9100
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -25,7 +25,7 @@ Resources:
           ToPort: 3030
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp 
-          FromPort: 9100  # For Prometheus Test
+          FromPort: 9100  # For Prometheus
           ToPort: 9100
           CidrIp: 0.0.0.0/0
 
@@ -35,8 +35,8 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: Udaicty
-      ImageId: ami-0557a15b87f6559cf
+      KeyName: udacity 
+      ImageId: ami-0557a15b87f6559cf 
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
