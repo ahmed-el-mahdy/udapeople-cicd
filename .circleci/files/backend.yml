@@ -6,7 +6,7 @@ Parameters:
     Description: Unique identifier.
     Type: String
   WorkflowID:
-    Value:  ${CIRCLE_WORKFLOW_ID:0:7}
+    Value:  "656235632"
     Description: Unique identifier.
     Type: String
 
