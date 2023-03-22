@@ -6,7 +6,6 @@ Parameters:
     Description: Unique identifier.
     Type: String
   WorkflowID:
-    Value:  "656235632"
     Description: Unique identifier.
     Type: String
 
@@ -40,4 +39,4 @@ Resources:
       ImageId: ami-0557a15b87f6559cf
       Tags:
         - Key: Name
-          Value: !Sub backend-${WorkflowID}
+          Value: !Sub backend-${ID}
