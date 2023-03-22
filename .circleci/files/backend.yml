@@ -5,12 +5,15 @@ Parameters:
   ID:
     Description: Unique identifier.
     Type: String
+  WorkflowID:
+    Description: Unique identifier.
+    Type: String
 
 Resources:
   InstanceSecurityGroup: 
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: -!Sub UdaPeople-${ID}
+      GroupName: -!Sub "UdaPeople-${WorkflowID}"
       GroupDescription: Allow port 22 and port 3030 and port 9100
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -36,4 +39,4 @@ Resources:
       ImageId: ami-0557a15b87f6559cf
       Tags:
         - Key: Name
-          Value: !Sub backend-${ID}
+          Value: !Sub backend-${WorkflowID}
