@@ -4,7 +4,7 @@ Parameters:
   ID:
     Description: Unique identifier.
     Type: String
-
+    default: Workflow_ID=$((1 + RANDOM % 10))
 
 Resources:
   InstanceSecurityGroup:
