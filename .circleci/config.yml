@@ -456,7 +456,7 @@ jobs:
                     --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"       
 
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
             then
               echo " Nothing to Delete/Can't Delete " 
             else
