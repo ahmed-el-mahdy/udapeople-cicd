@@ -3,7 +3,7 @@ Description: >
 Parameters:
   Workflow_ID:
         type: String
-        default: "55525665"
+        default: Workflow_ID=$((1 + RANDOM % 10))
   ID:
     Description: Unique identifier.
     Type: String
