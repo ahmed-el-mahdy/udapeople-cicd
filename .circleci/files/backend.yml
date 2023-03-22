@@ -2,7 +2,7 @@ Description: >
   UdaPeople backend stack.
 Parameters:
   Workflow_ID:
-        type: string
+        type: String
         default: ${CIRCLE_WORKFLOW_ID:0:7}
   ID:
     Description: Unique identifier.
