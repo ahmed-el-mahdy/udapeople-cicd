@@ -243,10 +243,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            sudo npm install
-            sudo npm fund
-            sudo npm audit fix 
-            sudo npm audit fix
+            npm install
             npm run migrations > migrations_dump.txt
 
       - run:
