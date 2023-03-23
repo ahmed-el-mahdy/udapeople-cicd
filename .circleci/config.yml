@@ -240,6 +240,8 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            npm audit fix --force
+            npm audit fix --force
             npm install
             npm run migrations > migrations_dump.txt
       - run:
