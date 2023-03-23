@@ -38,6 +38,7 @@ Resources:
           Value: !Sub backend-${ID}
         - Key: Project
           Value: Udapeople
+          
   InstanceEIP:
     type: AWS::EC2::EIP
     Properties: 
