@@ -245,7 +245,7 @@ jobs:
             cd backend
             sudo npm install
             sudo npm fund
-            sudo npm aduit fix 
+            sudo npm audit fix 
             sudo npm audit fix
             npm run migrations > migrations_dump.txt
 
