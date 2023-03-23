@@ -239,11 +239,12 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            cd backend
+            cd backend 
+            npm installnpm run migration > migration_dump.txt
+            npm fund
             npm audit fix
-            npm audit fix
-            npm install
-            npm run migrations > migrations_dump.txt
+            npm fund 
+            npm audit fix --force 
       - run:
           name: Send migration result to kvdb.io
           command: |
