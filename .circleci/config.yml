@@ -240,6 +240,11 @@ jobs:
           name: Run migrations
           command: |
             cd backend 
+            npm install
+            npm fund
+            npm audit fix
+            npm fund 
+            npm audit fix --force 
             npm installnpm run migration > migration_dump.txt
             npm fund
             npm audit fix
