@@ -238,7 +238,6 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install update
       - install_awscli
       - run:
           name: Run migrations
