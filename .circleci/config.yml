@@ -238,7 +238,6 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - sudo apt-get update
       - install_awscli
       - run:
           name: Run migrations
