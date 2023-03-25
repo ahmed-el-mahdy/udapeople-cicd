@@ -235,7 +235,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -243,6 +243,18 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            npm install 
+            npm audit fix
+            npm audit fix --force --audit-level=critical
+            npm audit fix --force --audit-level=critical
+            npm audit fix --force
+            npm audit fix --force
+            npm audit fix
+            npm audit --audit-level=critical
+            npm audit --audit-level=critical
+            npm audit fix
+            npm audit fix
+            npm audit fix
             npm install
             npm run migrations > migrations_dump.txt
             npm run seed
