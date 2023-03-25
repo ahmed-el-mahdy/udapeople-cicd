@@ -238,12 +238,12 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - install_update
       - install_awscli
       - run:
           name: Run migrations
           command: |
             cd backend
+            npm install update
             npm install
             npm run migrations > migrations_dump.txt
       - run:
