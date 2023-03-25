@@ -235,23 +235,10 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Set environment variables
-          command: |
-            echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> $BASH_ENV
-            echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> $BASH_ENV
-            echo "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" >> $BASH_ENV
-            echo "KVDB_BUCKET=${KVDB_BUCKET}" >> $BASH_ENV
-            echo "CIRCLE_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID}" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update && sudo apt-get install -y python3-pip
-            sudo pip3 install awscli
+      - install_awscli
       - run:
           name: Run migrations
           command: |
