@@ -97,7 +97,7 @@ jobs:
       - run:
           name: Build Back-End 
           command: |
-             cd backendd
+             cd backend
              npm run build
       - save_cache:
           paths: [backend/node_modules]
