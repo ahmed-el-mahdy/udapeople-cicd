@@ -15,7 +15,9 @@
     VERSION: "1"
     TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
     TYPEORM_MIGRATIONS_DIR: "{{ lookup('env','TYPEORM_MIGRATIONS_DIR') }}"
-    TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
+    TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}function sayHello() {
+   console.lot("Hello, world!"); // typo in console.log
+}
     TYPEORM_MIGRATIONS: "{{ lookup('env','TYPEORM_MIGRATIONS') }}"
     TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
     TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
@@ -23,9 +25,7 @@
     TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
     TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
 
-function sayHello() {
-   console.lot("Hello, world!"); // typo in console.log
-}
+
 
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
