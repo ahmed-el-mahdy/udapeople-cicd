@@ -23,17 +23,13 @@ commands:
             sudo apt install ansible -y 
 
   install_nodejs:
-    description: Install Node.js 13.8.0
+    description: Install Node.js 13
     steps:
       - run:
-          name: Install Node.js 13.8.0
+          name: Install Node.js 13
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt-get install gcc g++ make
-            sudo apt-get update && sudo apt-get install yarn
-            sudo apt-get install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0 
+            curl -fsSL https://deb.nodesource.com/setup_13s.x | sudo -E bash -
+            sudo apt install -y node.js
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -258,27 +254,23 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - checkout 
-      - attach_workspace:
-          at: ~/
-      - run:
+      - checkout
+      - install_awscli
+      - install_nodejs
+      - restore_cahe:
+          key: [frontend-deps]
+      - run: 
           name: Install dependencies
           command: |
-            # install AWS CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-
-            # install node js 13.8.0
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
-
+            cd frontend
+            npm install
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[].Instances[].PublicIpAddress' --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances  \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --query 'Reservations[].Instances[].PublicIpAddress' \ 
+              --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -287,12 +279,51 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+
       - destroy-environment
-      - revert-migrations
+      - revert-migrations 
+
+      ####################################################################################################
+
+
+      # - attach_workspace:
+      #     at: ~/
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # install AWS CLI
+      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #       unzip awscliv2.zip
+      #       sudo ./aws/install
+
+      #       # install node js 13.8.0
+      #       curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+      #       sudo apt install -y nodejs
+      #       sudo npm install --global n
+      #       sudo n 13.8.0
+
+      # - run:
+          # name: Get backend url
+          # command: |
+          #   export BACKEND_IP=$(aws ec2 describe-instances  \
+          #     --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
+          #     --query 'Reservations[].Instances[].PublicIpAddress' \ 
+          #     --output text)
+          #   export API_URL="http://${BACKEND_IP}:3030"
+          #   echo "API_URL = ${API_URL}"
+      #       echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+      #       cat frontend/.env
+      # - run:
+      #     name: Deploy frontend objects
+      #     command: |
+      #       cd frontend
+      #       npm run build
+      #       aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+
+      # - destroy-environment
+      # - revert-migrations
                     
   deploy-backend:
     docker:
