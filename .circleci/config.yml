@@ -257,8 +257,8 @@ jobs:
       - checkout
       - install_awscli
       - install_nodejs
-      - restore_cahe:
-          key: [frontend-deps]
+      - attach_workspace:
+          at: ~/
       - run: 
           name: Install dependencies
           command: |
@@ -330,6 +330,9 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
+      - install_ansible
+      - install_nodejs
       - add_ssh_keys:
           fingerprints: 
             - "63:21:bc:82:e9:d5:e7:31:7c:b5:7a:d4:7d:7e:a3:17" 
@@ -340,30 +343,33 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # install_AWS_CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            cd backend 
+            npm install
 
-            # install_node js
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
+      #        install_AWS_CLI
+      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #       unzip awscliv2.zip
+      #       sudo ./aws/install
 
-            # install_Ansible
-            sudo apt update
-            sudo apt install software-properties-common -y
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y         
+      #        install_node js
+      #       curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+      #       sudo apt install -y nodejs
+      #       sudo npm install --global n
+      #       sudo n 13.8.0
+
+      #      install_Ansible
+      #       sudo apt update
+      #       sudo apt install software-properties-common -y
+      #       sudo add-apt-repository --yes --update ppa:ansible/ansible
+      #       sudo apt install ansible -y         
       - run:
           name: packging backend
           command: |
             cd backend
-            npm install
             npm run build
-            tar -czvf artifact.tar.gz dist/* package*
             cd ..
+            tar -C backend -czvf artifact.tar.gz
+
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy backend
@@ -371,10 +377,12 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
+
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
+
       - destroy-environment      
       - revert-migrations
  
