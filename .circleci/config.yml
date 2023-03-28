@@ -23,10 +23,10 @@ commands:
             sudo apt install ansible -y 
 
   install_nodejs:
-    description: Install Node.js 13
+    description: Install Node.js 13.8.0
     steps:
       - run:
-          name: Install Node.js 13
+          name: Install Node.js 13.8.0
           command: |
             curl -fsSL https://deb.nodesource.com/setup_13s.x | sudo -E bash -
             sudo apt install -y node.js
