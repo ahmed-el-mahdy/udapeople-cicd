@@ -317,7 +317,7 @@ jobs:
             sudo apt update
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y            
+            sudo apt install ansible -y
       - run:
           name: packging backend
           command: |
@@ -338,10 +338,10 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
             
-      # Here's where you will add some code to rollback on failure  
-      - destroy-environment      
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment
       - revert-migrations
- 
+
   smoke-test:
     docker:
       - image: cimg/base:stable 
@@ -372,7 +372,7 @@ jobs:
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
 
-            if curl -s "${API_URL}/api/status" | grep "ok"
+            if curl -s -v "${API_URL}/api/status" | grep "ok"
             then
               echo " It's Working "
               exit 0
