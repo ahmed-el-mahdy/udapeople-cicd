@@ -288,46 +288,6 @@ jobs:
 
       - destroy-environment
       - revert-migrations 
-
-      ####################################################################################################
-
-
-      # - attach_workspace:
-      #     at: ~/
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # install AWS CLI
-      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      #       unzip awscliv2.zip
-      #       sudo ./aws/install
-
-      #       # install node js 13.8.0
-      #       curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-      #       sudo apt install -y nodejs
-      #       sudo npm install --global n
-      #       sudo n 13.8.0
-
-      # - run:
-          # name: Get backend url
-          # command: |
-          #   export BACKEND_IP=$(aws ec2 describe-instances  \
-          #     --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
-          #     --query 'Reservations[].Instances[].PublicIpAddress' \ 
-          #     --output text)
-          #   export API_URL="http://${BACKEND_IP}:3030"
-          #   echo "API_URL = ${API_URL}"
-      #       echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-      #       cat frontend/.env
-      # - run:
-      #     name: Deploy frontend objects
-      #     command: |
-      #       cd frontend
-      #       npm run build
-      #       aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-
-      # - destroy-environment
-      # - revert-migrations
                     
   deploy-backend:
     docker:
@@ -337,6 +297,7 @@ jobs:
       - install_awscli
       - install_ansible
       - install_nodejs
+
       - add_ssh_keys:
           fingerprints: 
             - "63:21:bc:82:e9:d5:e7:31:7c:b5:7a:d4:7d:7e:a3:17" 
@@ -350,7 +311,7 @@ jobs:
             cd backend 
             npm install    
       - run:
-          name: Deploy backend objects
+          name: packging backend
           command: |
             cd frontend
             npm install
@@ -358,17 +319,15 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - run:
-          name: Get backend url
+          name: Deploy backend
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances \
-            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --query 'Reservations[].Instances[].PublicIpAddress' \
-            --output text)
-
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-            cat frontend/.env
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
 
       - destroy-environment      
       - revert-migrations
