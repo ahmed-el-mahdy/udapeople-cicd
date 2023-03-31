@@ -221,7 +221,7 @@ jobs:
       - install_ansible
       - install_awscli
       - add_ssh_keys:
-          fingerprints: ["63:21:bc:82:e9:d5:e7:31:7c:b5:7a:d4:7d:7e:a3:17"]
+          fingerprints: ["1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6"]
       - attach_workspace:
           at: ~/
       - run:
@@ -296,7 +296,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: 
-            - "63:21:bc:82:e9:d5:e7:31:7c:b5:7a:d4:7d:7e:a3:17" 
+            - "1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6" 
       - attach_workspace:
           at: ~/
       - restore_cache:
@@ -308,7 +308,7 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-            
+
             # install node js
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
@@ -327,6 +327,7 @@ jobs:
             npm install
             npm run build
             tar -czf artifact.tar.gz dist/* package*
+            
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
@@ -335,6 +336,7 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
+
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
@@ -375,11 +377,12 @@ jobs:
 
             if curl -s -v "${API_URL}/api/status" | grep "ok"
             then
-              echo " It's Working "
+              echo " Back-End is Working "
               exit 0
-            else 
-              exit 1 
-            fi 
+            else
+              exit 1
+            fi
+
       - run:
           name: Frontend smoke test.
           command: |
