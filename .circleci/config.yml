@@ -350,19 +350,21 @@ jobs:
       - image: cimg/base:stable 
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # install AWS CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+      - install_awscli
+      - install_nodejs
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # install AWS CLI
+      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #       unzip awscliv2.zip
+      #       sudo ./aws/install
 
-            # install node js
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
+      #       # install node js
+      #       curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+      #       sudo apt install -y nodejs
+      #       sudo npm install --global n
+      #       sudo n 13.8.0
 
       - run:
           name: Backend smoke test.
@@ -375,7 +377,7 @@ jobs:
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
 
-            if curl -s -v "${API_URL}/api/status" | grep "ok"
+            if curl -s -v ${API_URL}/api/status | grep "ok"
             then
               echo " Back-End is Working "
               exit 0
@@ -497,7 +499,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
       # # - cleanup:
       # #     requires: [cloudfront-update]
