@@ -179,7 +179,7 @@ jobs:
              npm audit fix
              npm audit fix
       
-    deploy-infrastructure:
+  deploy-infrastructure:
       docker:
         - image: cimg/base:stable
       steps:
