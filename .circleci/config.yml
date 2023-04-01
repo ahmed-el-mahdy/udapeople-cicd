@@ -98,7 +98,13 @@ jobs:
           name: Build Back-End 
           command: |
              cd backend
+             npm audit fix
+             npm audit fix --force
+             npm audit fix --force
              npm run build
+             npm audit fix
+             npm audit fix --force
+             npm audit fix --force
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
