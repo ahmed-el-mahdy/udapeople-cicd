@@ -184,7 +184,12 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -192,8 +197,9 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation describe-stack-events --stack-name udapeople-backend
+
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -217,7 +223,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
 
       - destroy-environment 
-
+  
   configure-infrastructure:
     docker:
       - image: cimg/base:stable
@@ -242,6 +248,13 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
       - install_awscli
       - run:
           name: Run migrations
