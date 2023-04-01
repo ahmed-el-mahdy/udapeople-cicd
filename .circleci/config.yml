@@ -90,19 +90,16 @@ jobs:
   build-backend:
     docker:
       - image: cimg/node:13.8.0
-    environment:
-      PATH: $PATH:/usr/local/lib/node_modules/typescript/bin
-    steps:
+    steps: 
       - checkout
       - restore_cache:
           keys: [backend-deps]
       - run:
-          name: Build Back-End 
+          name: Back-end build
           command: |
-             npm install -g typescript
-             cd backend
-             npm run build
-             
+            cd backend
+            npm install 
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
