@@ -229,20 +229,20 @@ jobs:
   
   configure-infrastructure:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.10
     steps:
       - checkout 
       - install_ansible
-      - install_awscli
       - add_ssh_keys:
           fingerprints: ["1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6"]
       - attach_workspace:
           at: ~/
       - run:
-          name: configure server 
+          name: configure server ansible
           command: | 
             cd .circleci/ansible
             cat inventory.txt
+            
             ansible-playbook -i inventory.txt configure-server.yml
 
       - destroy-environment
@@ -396,8 +396,8 @@ jobs:
             else
               exit 1
             fi
-      # - destroy-environment      
-      # - revert-migrations
+      - destroy-environment      
+      - revert-migrations
 
   cloudfront-update:
     docker:
@@ -464,11 +464,12 @@ jobs:
             then
               echo " Nothing to Delete/Can't Delete " 
             else
+
               echo  " Deleting old Envirments "
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}" 
-              
+
             fi
             
 workflows:
