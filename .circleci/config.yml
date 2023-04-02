@@ -396,8 +396,8 @@ jobs:
             else
               exit 1
             fi
-      # - destroy-environment      
-      # - revert-migrations
+      - destroy-environment      
+      - revert-migrations
 
   cloudfront-update:
     docker:
@@ -500,5 +500,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      # # - cleanup:
-      # #     requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
