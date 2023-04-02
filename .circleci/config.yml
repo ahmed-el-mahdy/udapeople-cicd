@@ -380,9 +380,9 @@ jobs:
             if curl -s -v ${API_URL}/api/status | grep "ok"
             then
               echo " Back-End is Working "
-              exit 0
-            else
               exit 1
+            else
+              exit 0
             fi
 
       - run:
