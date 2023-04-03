@@ -283,7 +283,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            
       - run:
           name: Get backend url
           command: |
@@ -314,8 +313,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: 
-            - "1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6" 
+          fingerprints: ["1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6"]
       - attach_workspace:
           at: ~/
       - restore_cache:
