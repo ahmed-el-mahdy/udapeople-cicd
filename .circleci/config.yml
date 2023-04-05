@@ -244,7 +244,6 @@ jobs:
             cat inventory.txt
             
             ansible-playbook -i inventory.txt configure-server.yml
-
       - destroy-environment
 
   run-migrations:
