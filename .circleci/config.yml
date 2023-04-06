@@ -210,7 +210,7 @@ jobs:
                 --template-file .circleci/files/frontend.yml \
                 --tags project=udapeople \
                 --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"        
+                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -225,13 +225,13 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
 
-      - destroy-environment 
+      - destroy-environment
   
   configure-infrastructure:
     docker:
       - image: cimg/python:3.10
     steps:
-      - checkout 
+      - checkout
       - install_ansible
       - add_ssh_keys:
           fingerprints: ["1f:0b:e5:c5:2f:ee:21:27:39:b1:63:e6:83:91:f2:f6"]
@@ -468,7 +468,7 @@ jobs:
               echo  " Deleting old Envirments "
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}" 
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
 
             fi
             
