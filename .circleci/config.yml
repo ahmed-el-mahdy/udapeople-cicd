@@ -22,20 +22,35 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y 
 
-  install_nodejs: # This command for installing nodejs 
-      description: Install Node.js 13.8.0
-      steps:
-        - run:
-            name: Install Node.js 13.8.0
-            command: |
-              # Install Node.js LTS version as our base Node.js version
-              curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-              sudo apt install -y nodejs
+  install_nodejs:
+    description: Install Node.js 13.8.0
+    steps:
+      - restore_cache:
+          key: nodejs
+          paths:
+            - node_modules
+      - run:
+          name: Install Node.js 13.8.0
+          command: |
+            # Install Node.js LTS version as our base Node.js version
+            # Skip downloading node js bundle if cached
+            if [[ ! -f node_modules ]]; then
+            echo "------ node js not cached -----"
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs
 
-              # Use n version manager to use Node.js v13.8.0
-              sudo npm install --global n
-              sudo n 13.8.0 
-
+            # Use n version manager to use Node.js v13.8.0
+            sudo npm install --global n
+            sudo n 13.8.0
+            fi
+            # Skip installing if command exists
+            if ! command -v node &> /dev/null; then
+              sudo node_modules -i ~/bin
+            fi
+      - save_cache:
+          key: nodejs
+          paths:
+            - node_modules
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
