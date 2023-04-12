@@ -51,6 +51,7 @@ commands:
           key: nodejs
           paths:
             - node_modules
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -291,7 +292,6 @@ jobs:
               echo "No migrations are pending" 
             fi
       - destroy-environment
-      
       - revert-migrations
 
   deploy-frontend:
@@ -301,18 +301,15 @@ jobs:
       - checkout 
       - attach_workspace:
           at: ~/
+      - install_awscli
+      - install_nodejs
+      - restore_cache:
+          keys: [frontend-deps]
       - run:
           name: Install dependencies
           command: |
-            # install AWS CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-            # install node js
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
+            cd frontend
+            npm install
       - run:
           name: Get backend url
           command: |
@@ -342,29 +339,20 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - install_ansible
+      - install_awscli
+      - install_nodejs
       - add_ssh_keys:
           fingerprints: ["30:42:e5:22:70:41:cb:e4:45:f2:9d:79:c9:f2:89:64"]
       - attach_workspace:
           at: ~/
       - restore_cache:
-          keys: [backend-build]          
+          keys: [backend-deps]          
       - run:
           name: Install dependencies
           command: |
-            # install AWS CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-            # install node js
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
-            # install Ansible
-            sudo apt update
-            sudo apt install software-properties-common -y
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y            
+            cd backend
+            npm install          
       - run:
           name: packging backend
           command: |
@@ -380,6 +368,7 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
+            
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
