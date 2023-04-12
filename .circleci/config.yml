@@ -30,7 +30,11 @@ commands:
             command: |
               # Install Node.js LTS version as our base Node.js version
               curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+              sudo apt-get install libc6
               sudo apt install -y nodejs
+              sudo apt-get install libc6
+              sudo apt-get install -f
+
               # Use n version manager to use Node.js v13.8.0
               sudo npm install --global n
               sudo n 13.8.0 
