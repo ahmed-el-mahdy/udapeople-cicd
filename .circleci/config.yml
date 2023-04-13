@@ -79,7 +79,7 @@ commands:
           when: on_fail
           command: |
             SUCCESS=$(curl -- insecure https://kvdb.io/${KVDB_BUCKET}/migraion_<< parameters.Workflow_ID >>)
-            if (( $SUCCESS == 1 )); 
+            if [ "$SUCCESS" = "1" ];
             then
               cd ~/project/backend
               npm install
