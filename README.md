@@ -1,6 +1,7 @@
 # Udapeople CI/CD 🎉
 
 ![CI/CD Pipeline](https://img.shields.io/badge/CI/CD-Pipeline-green.svg) ![Docker](https://img.shields.io/badge/Docker-%E2%9C%94-blue.svg) ![Terraform](https://img.shields.io/badge/Terraform-%E2%9C%94-blue.svg)
+![udapeople-pipeline](https://github.com/user-attachments/assets/37910192-f76a-40a4-a189-9f24f77ce114)
 
 ## 🚀 Project Overview
 
