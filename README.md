@@ -1,55 +1,98 @@
-# Udapeople CI/CD 🎉
+# UdaPeople CI/CD Graduation Project
 
-![CI/CD Pipeline](https://img.shields.io/badge/CI/CD-Pipeline-green.svg) ![Docker](https://img.shields.io/badge/Docker-%E2%9C%94-blue.svg) ![Terraform](https://img.shields.io/badge/Terraform-%E2%9C%94-blue.svg)
-![udapeople-pipeline](https://github.com/user-attachments/assets/37910192-f76a-40a4-a189-9f24f77ce114)
+[![CircleCI](https://img.shields.io/badge/CircleCI-Pipeline-343434?logo=circleci&logoColor=white)](https://circleci.com/)
+[![AWS](https://img.shields.io/badge/AWS-CloudFormation%20%7C%20EC2%20%7C%20S3-232F3E?logo=amazonwebservices&logoColor=white)](https://aws.amazon.com/)
+[![Ansible](https://img.shields.io/badge/Ansible-Configuration-EE0000?logo=ansible&logoColor=white)](https://www.ansible.com/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Live-14B8A6)](https://ahmed-el-mahdy.github.io/)
 
-## 🚀 Project Overview
+An end-to-end DevOps Nanodegree graduation project that builds, tests, scans, provisions, configures, deploys, verifies, promotes, and cleans up a TypeScript application on AWS.
 
-Udapeople CI/CD is a robust Continuous Integration and Continuous Deployment (CI/CD) pipeline for the Udapeople application, aimed at streamlining development and deployment processes. This project automates the build, testing, and deployment stages, ensuring rapid delivery of high-quality software.
+![UdaPeople delivery pipeline](udapeople-pipeline.png)
 
-### 🔍 Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [CI/CD Process](#cicd-process)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+## What This Repository Demonstrates
 
-## 🌟 Features
+- A multi-job CircleCI workflow with explicit dependencies and workspace handoff.
+- Frontend and backend build, unit-test, and dependency-audit stages.
+- Ephemeral AWS infrastructure through CloudFormation.
+- EC2 configuration and backend deployment through Ansible roles.
+- Database migration execution with failure-time rollback hooks.
+- Frontend publication to S3 and CloudFront distribution updates.
+- Backend and frontend smoke tests before promotion.
+- Cleanup of previous workflow stacks after successful release.
+- Prometheus Node Exporter configuration for host-level operational visibility.
 
-- **Automated Builds**: Trigger builds automatically with every code change.
-- **Comprehensive Testing**: Run unit and integration tests to maintain code quality.
-- **Seamless Deployment**: Effortlessly deploy applications to production environments.
-- **Real-Time Notifications**: Get updates on build and deployment statuses.
-- **Infrastructure as Code**: Manage infrastructure using Terraform for consistent environments.
+## Delivery Flow
 
-## 🛠️ Tech Stack
+```mermaid
+flowchart LR
+    CODE[Commit] --> BUILD[Build and test]
+    BUILD --> SCAN[Dependency audit]
+    SCAN --> CFN[CloudFormation]
+    CFN --> ANS[Ansible configuration]
+    ANS --> MIG[Database migrations]
+    MIG --> DEPLOY[Frontend and backend deploy]
+    DEPLOY --> SMOKE[Smoke tests]
+    SMOKE --> CDN[CloudFront update]
+    CDN --> CLEAN[Old stack cleanup]
+```
 
-- **Languages**: 
-  - ![Python](https://img.shields.io/badge/Python-%E2%9C%94-blue.svg) 
-  - ![JavaScript](https://img.shields.io/badge/JavaScript-%E2%9C%94-yellow.svg) 
+## Repository Map
 
-- **Tools**: 
-  - ![Docker](https://img.shields.io/badge/Docker-%E2%9C%94-blue.svg) 
-  - ![Terraform](https://img.shields.io/badge/Terraform-%E2%9C%94-blue.svg) 
-  - ![Git](https://img.shields.io/badge/Git-%E2%9C%94-red.svg) 
-  - ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-%E2%9C%94-gray.svg) 
+| Path | Responsibility |
+| --- | --- |
+| `.circleci/config.yml` | Pipeline orchestration, rollback, smoke tests, promotion, and cleanup |
+| `.circleci/files` | CloudFormation templates for backend, frontend, and CloudFront |
+| `.circleci/ansible` | Host configuration, deployment, and Node Exporter roles |
+| `frontend` | React/TypeScript web application and tests |
+| `backend` | NestJS/TypeScript API, migrations, domain logic, and tests |
+| `screenshots` | Evidence captured during the original project delivery |
+| `util/docker-compose.yml` | Supporting local service configuration |
 
-## 📥 Installation
+## Pipeline Jobs
 
-Follow these steps to get your development environment set up:
+The workflow includes:
 
-### Prerequisites
+1. `build-frontend` and `build-backend`
+2. `test-frontend` and `test-backend`
+3. `scan-frontend` and `scan-backend`
+4. `deploy-infrastructure`
+5. `configure-infrastructure`
+6. `run-migrations`
+7. `deploy-frontend` and `deploy-backend`
+8. `smoke-test`
+9. `cloudfront-update`
+10. `cleanup`
 
-- [Git](https://git-scm.com/downloads) installed on your machine.
-- [Docker](https://www.docker.com/get-started) installed.
-- [Terraform](https://www.terraform.io/downloads.html) installed.
-- A cloud service provider account (e.g., AWS, Azure, Google Cloud).
+Failure handlers can revert the latest migration and delete workflow-specific CloudFormation stacks. Review those commands carefully before running the pipeline against an AWS account.
 
-### Clone the Repository
+## Review Locally
+
+The safest first step is static inspection:
 
 ```bash
-git clone https://github.com/ciscosky/udapeople-cicd.git
+git clone https://github.com/ahmed-el-mahdy/udapeople-cicd.git
 cd udapeople-cicd
+
+circleci config validate .circleci/config.yml
+aws cloudformation validate-template --template-body file://.circleci/files/backend.yml
+aws cloudformation validate-template --template-body file://.circleci/files/frontend.yml
+```
+
+The CloudFormation validation commands contact AWS but do not create stacks. Application tests use the dependency versions locked in each package directory.
+
+## Required CI Context
+
+The pipeline expects AWS credentials, database values, an SSH key, and KVDB configuration in CircleCI project settings or contexts. Keep all values outside the repository and scope credentials to the smallest required set of actions.
+
+## Security and Modernization Notes
+
+- This is a historical training project and uses Node.js 13-era dependencies. Upgrade and retest before reuse.
+- Replace dependency mutation during CI (`npm audit fix`) with deterministic install, reporting, and controlled remediation.
+- Pin external downloads and validate checksums.
+- Replace long-lived AWS keys with short-lived federation where the CI platform supports it.
+- Restrict EC2 security groups, protect SSH keys, and review every rollback/delete command against the target account.
+- Modern deployments should add artifact provenance, image or package SBOMs, and policy checks.
+
+## Status
+
+This repository is preserved as evidence of a complete CI/CD lifecycle, including rollback and operational verification. It is not presented as a current production baseline without dependency and security modernization.
