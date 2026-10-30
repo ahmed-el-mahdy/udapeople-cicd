@@ -23,6 +23,8 @@ An end-to-end DevOps Nanodegree graduation project that builds, tests, scans, pr
 
 ## Delivery Flow
 
+Source review: 30 October 2026. The flow describes the historical CircleCI lifecycle, not a currently deployed production environment. Promotion/cleanup and rollback hooks are distinct from a measured disaster-recovery result.
+
 ```mermaid
 flowchart LR
     CODE[Commit] --> BUILD[Build and test]
@@ -94,5 +96,7 @@ The pipeline expects AWS credentials, database values, an SSH key, and KVDB conf
 - Modern deployments should add artifact provenance, image or package SBOMs, and policy checks.
 
 ## Status
+
+Work-reference notes: [career/project index](https://github.com/ahmed-el-mahdy/Career-Advance#personal-repository-reference-map). Preserve its training provenance. Before reuse, review database migration reversibility, old-stack deletion scope, smoke-test semantics and actual alert delivery rather than inferring safety from the presence of a job name.
 
 This repository is preserved as evidence of a complete CI/CD lifecycle, including rollback and operational verification. It is not presented as a current production baseline without dependency and security modernization.
